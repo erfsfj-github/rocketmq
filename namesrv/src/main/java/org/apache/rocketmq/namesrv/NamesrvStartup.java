@@ -50,7 +50,13 @@ public class NamesrvStartup {
     public static void main(String[] args) {
         main0(args);
     }
-
+//namesrvConfig = {NamesrvConfig@863}
+// rocketmqHome = "/Users/bichengdeng/Desktop/github/rocketmq"
+// kvConfigPath = "/Users/bichengdeng/namesrv/kvConfig.json"
+// configStorePath = "/Users/bichengdeng/namesrv/namesrv.properties"
+// productEnvName = "center"
+// clusterTest = false
+// orderMessageEnable = false
     public static NamesrvController main0(String[] args) {
 
         try {
@@ -69,9 +75,10 @@ public class NamesrvStartup {
     }
 
     public static NamesrvController createNamesrvController(String[] args) throws IOException, JoranException {
+        // 设置系统属性
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
         //PackageConflictDetect.detectFastjson();
-
+        // 命令解析
         Options options = ServerUtil.buildCommandlineOptions(new Options());
         commandLine = ServerUtil.parseCmdLine("mqnamesrv", args, buildCommandlineOptions(options), new PosixParser());
         if (null == commandLine) {
@@ -142,7 +149,7 @@ public class NamesrvStartup {
             controller.shutdown();
             System.exit(-3);
         }
-
+        // 注册关闭的钩子函数
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(log, new Callable<Void>() {
             @Override
             public Void call() throws Exception {

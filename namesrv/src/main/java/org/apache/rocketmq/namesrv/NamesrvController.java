@@ -83,7 +83,7 @@ public class NamesrvController {
             Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
         this.registerProcessor();
-
+        // 创建定时任务，扫描离线的broker
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
