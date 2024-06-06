@@ -59,6 +59,7 @@ public class NamesrvStartup {
 // orderMessageEnable = false
     public static NamesrvController main0(String[] args) {
 
+
         try {
             NamesrvController controller = createNamesrvController(args);
             start(controller);
