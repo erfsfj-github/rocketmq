@@ -106,7 +106,9 @@ public class BrokerStartup {
             if (null == commandLine) {
                 System.exit(-1);
             }
-
+            /* 一、配置解析与准备
+            1. netty server for produce and consume
+            2. netty client for nameserver */
             final BrokerConfig brokerConfig = new BrokerConfig();
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
             final NettyClientConfig nettyClientConfig = new NettyClientConfig();
@@ -121,6 +123,7 @@ public class BrokerStartup {
                 messageStoreConfig.setAccessMessageInMemoryMaxRatio(ratio);
             }
 
+            // 读取文件配置，填充配置
             if (commandLine.hasOption('c')) {
                 String file = commandLine.getOptionValue('c');
                 if (file != null) {
@@ -147,6 +150,7 @@ public class BrokerStartup {
                 System.exit(-2);
             }
 
+            // namesrvAddr 地址检查
             String namesrvAddr = brokerConfig.getNamesrvAddr();
             if (null != namesrvAddr) {
                 try {
@@ -191,6 +195,7 @@ public class BrokerStartup {
 
             if (commandLine.hasOption('p')) {
                 InternalLogger console = InternalLoggerFactory.getLogger(LoggerName.BROKER_CONSOLE_NAME);
+                // 控制台日志打印
                 MixAll.printObjectProperties(console, brokerConfig);
                 MixAll.printObjectProperties(console, nettyServerConfig);
                 MixAll.printObjectProperties(console, nettyClientConfig);
@@ -204,13 +209,14 @@ public class BrokerStartup {
                 MixAll.printObjectProperties(console, messageStoreConfig, true);
                 System.exit(0);
             }
-
+            // 日志 broker.log
             log = InternalLoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
             MixAll.printObjectProperties(log, brokerConfig);
             MixAll.printObjectProperties(log, nettyServerConfig);
             MixAll.printObjectProperties(log, nettyClientConfig);
             MixAll.printObjectProperties(log, messageStoreConfig);
 
+            /*二、包装Broker控制器配置*/
             final BrokerController controller = new BrokerController(
                 brokerConfig,
                 nettyServerConfig,
@@ -224,7 +230,7 @@ public class BrokerStartup {
                 controller.shutdown();
                 System.exit(-3);
             }
-
+            /*三、注册关闭的钩子*/
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
                 private volatile boolean hasShutdown = false;
                 private AtomicInteger shutdownTimes = new AtomicInteger(0);
