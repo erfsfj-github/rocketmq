@@ -156,15 +156,19 @@ public class NamesrvController {
         this.remotingServer.start();
 
         if (this.fileWatchService != null) {
+            // 监听文件变化事件
             this.fileWatchService.start();
         }
     }
 
     public void shutdown() {
+        // 关闭rpc服务
         this.remotingServer.shutdown();
+        // 关闭线程池
         this.remotingExecutor.shutdown();
+        // 关闭线程池
         this.scheduledExecutorService.shutdown();
-
+        // 关闭文件监听服务
         if (this.fileWatchService != null) {
             this.fileWatchService.shutdown();
         }
