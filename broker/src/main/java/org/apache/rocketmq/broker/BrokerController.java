@@ -853,10 +853,12 @@ public class BrokerController {
             this.messageStore.start();
         }
 
+        // 接收生产者消费者的请求
         if (this.remotingServer != null) {
             this.remotingServer.start();
         }
 
+        // 只接收生产者的请求
         if (this.fastRemotingServer != null) {
             this.fastRemotingServer.start();
         }
@@ -865,28 +867,37 @@ public class BrokerController {
             this.fileWatchService.start();
         }
 
+        // 启动与ns的连接
         if (this.brokerOuterAPI != null) {
             this.brokerOuterAPI.start();
         }
 
+        // 负责管理长轮询请求的队列，并根据条件通知消息到达，以满足消费者的拉取消息需求。
         if (this.pullRequestHoldService != null) {
             this.pullRequestHoldService.start();
         }
 
+        // broker-scan、扫描不活跃的生产者或消费者，10检查,120剔除
         if (this.clientHousekeepingService != null) {
             this.clientHousekeepingService.start();
         }
 
+        // 执行定时过滤脚本命令
         if (this.filterServerManager != null) {
             this.filterServerManager.start();
         }
 
+        // "D"：代表"Distributed"，即"分布式"的意思
+        // "Ledger"：指的是"账本"或"簿记"，通常用于记录交易或事件的序列。
         if (!messageStoreConfig.isEnableDLegerCommitLog()) {
             startProcessorByHa(messageStoreConfig.getBrokerRole());
+            // 主从复制
             handleSlaveSynchronize(messageStoreConfig.getBrokerRole());
+            // 注册所有broker信息（包括topic、消费者组等信息）
             this.registerBrokerAll(true, false, true);
         }
 
+        // ① 每三十秒发送ns心跳包，注册broker
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override

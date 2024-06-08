@@ -231,7 +231,7 @@ public class MQClientInstance {
                     if (null == this.clientConfig.getNamesrvAddr()) {
                         this.mQClientAPIImpl.fetchNameServerAddr();
                     }
-                    // Start request-response channel
+                    // Start request-response channel// 启动netty客户端
                     this.mQClientAPIImpl.start();
                     // Start various schedule tasks
                     this.startScheduledTask();

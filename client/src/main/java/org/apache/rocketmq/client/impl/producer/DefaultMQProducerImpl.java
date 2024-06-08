@@ -199,7 +199,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
                 }
 
                 this.mQClientFactory = MQClientManager.getInstance().getOrCreateMQClientInstance(this.defaultMQProducer, rpcHook);
-
+                // 注册生产者
                 boolean registerOK = mQClientFactory.registerProducer(this.defaultMQProducer.getProducerGroup(), this);
                 if (!registerOK) {
                     this.serviceState = ServiceState.CREATE_JUST;
@@ -576,6 +576,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
         long beginTimestampFirst = System.currentTimeMillis();
         long beginTimestampPrev = beginTimestampFirst;
         long endTimestamp = beginTimestampFirst;
+        // 从ns中拉取最新topic信息
         TopicPublishInfo topicPublishInfo = this.tryToFindTopicPublishInfo(msg.getTopic());
         if (topicPublishInfo != null && topicPublishInfo.ok()) {
             boolean callTimeout = false;

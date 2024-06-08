@@ -183,6 +183,7 @@ public class BrokerOuterAPI {
 
         if (oneway) {
             try {
+                // 单向发送心跳包
                 this.remotingClient.invokeOneway(namesrvAddr, request, timeoutMills);
             } catch (RemotingTooMuchRequestException e) {
                 // Ignore
