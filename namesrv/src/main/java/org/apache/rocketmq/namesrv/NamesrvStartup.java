@@ -144,7 +144,7 @@ public class NamesrvStartup {
         if (null == controller) {
             throw new IllegalArgumentException("NamesrvController is null");
         }
-
+        // ① 创建定时任务，每10s扫描离线的broker，超过120s剔除
         boolean initResult = controller.initialize();
         if (!initResult) {
             controller.shutdown();

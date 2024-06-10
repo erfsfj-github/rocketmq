@@ -30,6 +30,7 @@ public class Producer {
         producer.setSendMsgTimeout(300000);
         // 注册生产者
         // 拉取路由信息
+        // ④ 每30s去ns拉取topic info 信息
         producer.start();
 
         for (int i = 0; i < 1; i++)
@@ -39,6 +40,7 @@ public class Producer {
                         "TagA",
                         "OrderID188",
                         "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
+                    // ⑥ 发送消息，执行远程服务器命令，touch，tail，写数据到远程broker服务的文件中
                     SendResult sendResult = producer.send(msg);
                     System.out.printf("%s%n", sendResult);
                 }

@@ -234,10 +234,13 @@ public class MQClientInstance {
                     // Start request-response channel// 启动netty客户端
                     this.mQClientAPIImpl.start();
                     // Start various schedule tasks
+                    // ④ 每30s去ns拉取topic info 信息
                     this.startScheduledTask();
                     // Start pull service
+                    // 消费者拉取消息
                     this.pullMessageService.start();
                     // Start rebalance service
+                    // 消费者，消费的负载均衡策略（集群模式下）
                     this.rebalanceService.start();
                     // Start push service
                     this.defaultMQProducer.getDefaultMQProducerImpl().start(false);
@@ -267,6 +270,7 @@ public class MQClientInstance {
             }, 1000 * 10, 1000 * 60 * 2, TimeUnit.MILLISECONDS);
         }
 
+        // ④ 每30s去ns拉取topic info 信息
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -279,12 +283,15 @@ public class MQClientInstance {
             }
         }, 10, this.clientConfig.getPollNameServerInterval(), TimeUnit.MILLISECONDS);
 
+        // ⑤ 每30s，生产者或消费者，发送心跳给所有的broker
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
             public void run() {
                 try {
+                    // 清除本地离线的broker
                     MQClientInstance.this.cleanOfflineBroker();
+                    // 生产者或消费者，发送心跳给所有的broker
                     MQClientInstance.this.sendHeartbeatToAllBrokerWithLock();
                 } catch (Exception e) {
                     log.error("ScheduledTask sendHeartbeatToAllBroker exception", e);

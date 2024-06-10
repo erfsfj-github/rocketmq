@@ -877,7 +877,7 @@ public class BrokerController {
             this.pullRequestHoldService.start();
         }
 
-        // broker-scan、扫描不活跃的生产者或消费者，10检查,120剔除
+        // ② broker-scan、扫描不活跃的生产者或消费者，10检查,120剔除
         if (this.clientHousekeepingService != null) {
             this.clientHousekeepingService.start();
         }
@@ -897,7 +897,7 @@ public class BrokerController {
             this.registerBrokerAll(true, false, true);
         }
 
-        // ① 每三十秒发送ns心跳包，注册broker
+        // ③ 每三十秒发送ns心跳包，注册broker
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
